@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <Credentials.h>
+#include "version.h"
 
 // Import required libraries
 #ifdef ESP32
@@ -27,12 +28,19 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   //digitalWrite(LED_BUILTIN, LOW);
 
+  Serial.printf("\n\nESPrinkler2 %s compiled %s %s %s\n", VERSION, __DATE__, __TIME__, __FILE__);
+
+  WiFi.mode(WIFI_STA);
+  WiFi.disconnect();      //  https://starter-kit.nettigo.pl/2018/02/nodemcu-praca-trybie-ap-czyli-wlasne-wifi/
+  delay(500);
   // Connect to Wi-Fi
+  Serial.print("Connecting to WiFi..  ");
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.println("Connecting to WiFi..");
+    delay(500);
+    Serial.print(".");
   }
+  Serial.println();
 
   // Print ESP Local IP Address
   Serial.println(WiFi.localIP());
@@ -40,5 +48,12 @@ void setup() {
 }
 
 void loop() {
+ // digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
   // put your main code here, to run repeatedly:
+  delay(800);
+
+  if (digitalRead(LED_BUILTIN))
+      Serial.println("LED ON");
+  else
+      Serial.println("LED OFF");
 }
